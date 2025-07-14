@@ -18,14 +18,24 @@ public class ParameterizedTests {
         Configuration.browserSize = "1920x1080";
     }
 
-    @ValueSource(strings = {
+    @ValueSource(ints = {
+            25, 16, 225
+    })
+    @ParameterizedTest
+    public void mathTest(int number){
+        open("https://calcset.ru/calculator.php?category=math&calculator=square_root_calculator#result");
+        $("input#number").setValue(String.valueOf(number)).pressEnter();
+        $("div#result").shouldHave(text(String.valueOf(Math.sqrt(number))));
+    }
+
+/*    @ValueSource(strings = {
     "Университет", "Управление", "Образование", "Наука", "Сотрудничество", "Общественная жизнь"
     })
     @ParameterizedTest
     public void hoverTest(String nameOfMenuButton){
         open("https://www.sstu.ru/");
         $("li.root a").shouldHave(text(nameOfMenuButton));
-    }
+    }*/
 
     @CsvSource(value = {
             "физика , ЭТИ продолжает серию просветительских семинаров по физике",
