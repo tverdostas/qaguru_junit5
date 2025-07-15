@@ -1,12 +1,16 @@
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.ElementsCollection;
+import data.Applications;
+import data.ApplicationsLinks;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.CollectionCondition.size;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ParameterizedTests {
@@ -28,15 +32,6 @@ public class ParameterizedTests {
         $("div#result").shouldHave(text(String.valueOf(Math.sqrt(number))));
     }
 
-/*    @ValueSource(strings = {
-    "Университет", "Управление", "Образование", "Наука", "Сотрудничество", "Общественная жизнь"
-    })
-    @ParameterizedTest
-    public void hoverTest(String nameOfMenuButton){
-        open("https://www.sstu.ru/");
-        $("li.root a").shouldHave(text(nameOfMenuButton));
-    }*/
-
     @CsvSource(value = {
             "физика , ЭТИ продолжает серию просветительских семинаров по физике",
             "математика , История",
@@ -44,11 +39,28 @@ public class ParameterizedTests {
     })
 
     @ParameterizedTest(name="Для поискового запроса {0} первым результатом должен быть текст {1}")
-    @DisplayName("")
+    @DisplayName("ghfh")
     public void searchTest(String searchQuery, String expectedText) {
         open("https://www.sstu.ru/");
         $(".fa-search").click();
         $("#inline-search__input").setValue(searchQuery).pressEnter();
         $(".search-page > a").shouldHave(text(expectedText));
+    }
+
+
+    @ValueSource(strings = {
+    "Университет", "Управление", "Образование", "Наука", "Сотрудничество", "Общественная жизнь"
+    })
+    @ParameterizedTest
+    public void hoverTest(String nameOfMenuButton){
+        open("https://www.sstu.ru/");
+        $("li.root a").shouldHave(text(nameOfMenuButton));
+    }
+    @EnumSource(Applications.class)
+    @ParameterizedTest
+    void rzdSiteShouldDisplayTextInTwoLanguages(Applications apps){
+    open("https://www.rzd.ru/");
+        $$("[data-test-id='footer_contacts_container'] > li > a").shouldHave(size(5));
+                $("[title='" + apps.applicationName + "']").shouldBe(visible);
     }
 }
