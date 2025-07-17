@@ -7,17 +7,22 @@ repositories {
 }
 
 dependencies {
-    testImplementation (
-            "com.codeborne:selenide:6.19.1",
+    testImplementation(
+            "com.codeborne:selenide:7.9.4",
             "org.junit.jupiter:junit-jupiter:5.9.3",
-            'com.github.javafaker:javafaker:1.0.2')
+            "com.github.javafaker:javafaker:1.0.2",
+            "org.slf4j:slf4j-simple:2.0.17"
+    )
 
     testRuntimeOnly(
-        "org.slf4j:slf4j-simple:1.7.29")
+            "org.slf4j:slf4j-api:2.0.17"
+    )
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 test {

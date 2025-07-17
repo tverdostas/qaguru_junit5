@@ -1,16 +1,18 @@
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.ElementsCollection;
 import data.Applications;
-import data.ApplicationsLinks;
+import data.Language;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.CollectionCondition.texts;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class ParameterizedTests {
@@ -63,4 +65,56 @@ public class ParameterizedTests {
         $$("[data-test-id='footer_contacts_container'] > li > a").shouldHave(size(5));
                 $("[title='" + apps.applicationName + "']").shouldBe(visible);
     }
+
+
+/*    static Stream<Arguments> rzdSiteShouldDisplayLinksOnAllMarkets(){
+return Stream.of(
+  Arguments.of(ApplicationsLinks.RUSTORE.nameOfStore, ApplicationsLinks.RUSTORE.linkOnApp));
+    }
+
+    @ParameterizedTest
+    void rzdSiteShouldDisplayLinksOnAllMarkets(ApplicationsLinks applicationsLinks){
+        $("[title='" + ApplicationsLinks.RUSTORE.nameOfStore + "']").shouldHave(attribute(String.valueOf(href(ApplicationsLinks.RUSTORE.linkOnApp))));
+    }
+}*/
+
+/*
+
+    static Stream<Arguments> rzdSiteShouldDisplayLinksOnAllMarkets(){
+return Stream.of(
+  Arguments.of(DropdownLists.TRAINSANDROUTES, List.of("Скоростные поезда", "Высокоскоростные поезда (новый проект)",
+          "Фирменные поезда", "Дневные поезда")),
+        Arguments.of(DropdownLists.TARIFFSANDPROMOTIONS, List.of("Акции", "Льготы"))
+);
+    }
+
+    @ParameterizedTest
+    void rzdSiteShouldDisplayLinksOnAllMarkets(DropdownLists dropdownLists, List<String> subMenuItems){
+    $(byText("Поезда и маршруты")).parent()
+    }
 }
+*/
+
+    static Stream<Arguments> sheremetyevoSiteHaveCorrectMenuItemsOnEngAndRus() {
+        return Stream.of(
+                // хм, не знаю как это написать, если нужна переменная типа enum, то не нужно дергать его конкретный метод, достаточно обращения к конкретному элементу
+                Arguments.of(Language.RU, List.of("Вылет", "Прилет", "Пересадка")),
+                Arguments.of(Language.ENG, List.of("Departures", "Arrivals", "Connections"))
+        );
+    }
+
+    @MethodSource
+    @ParameterizedTest
+    void sheremetyevoSiteHaveCorrectMenuItemsOnEngAndRus(Language language, List<String> menuItems) {
+        // не знаю, должен ли браузер перезапускаться по заданию каждый раз, но только сайт загружается, если что
+        open("https://www.svo.aero/en/main");
+        $("#mat-select-0").click();
+        $$(".mat-option-text").findBy(text(language.languageName)).click();
+        $$("span.nav__name").shouldHave(texts(menuItems));
+    }
+
+    // Кажется, что на все вопросы ответил
+
+}
+
+
